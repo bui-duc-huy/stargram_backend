@@ -1,0 +1,32 @@
+type Post {
+    _id: String
+    title: String
+    des: String
+    image: String
+    like: Int
+    dislike: Int
+    idCreator: String
+}
+
+type Query { 
+    getAllPost : [Post]
+    getPostByUser(idCreator: String): [Post]
+}
+
+input AddPostInput {
+    title: String
+    des: String
+    image: String
+}
+
+input EditPostInput { 
+    title: String
+    des: String
+    image: String
+}
+
+type Mutation { 
+    createPost(idUser: String, post: AddPostInput): Post
+    editPost(idPost: String , post: EditPostInput): Post
+    deletePost(_id: String): Boolean
+}

@@ -1,0 +1,35 @@
+type User {
+  _id: String
+  username: String
+  password: String
+  role: String
+  idPosts: [String]
+}
+
+type LoginResponse {
+	token: String
+}
+
+type Query {
+  hello: String
+  getAllUser: [User]  
+  getUserByPost(idPost: String): User
+}
+
+input CreateUserInput {
+  username: String
+  password: String
+  role: String
+}
+
+input EditUserInput {
+  username: String
+  password: String
+  role: String
+}
+
+type Mutation {
+  createUser(input: CreateUserInput): User
+  login(username: String, password: String): LoginResponse
+  editUser(_id: String, input: EditUserInput): User
+}
