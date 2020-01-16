@@ -9,7 +9,7 @@ type Post {
 }
 
 type Query { 
-    getAllPost : [Post]
+    getAllPost: [Post]
     getPostByUser(idCreator: String): [Post]
 }
 
@@ -26,7 +26,9 @@ input EditPostInput {
 }
 
 type Mutation { 
-    createPost(idUser: String, post: AddPostInput): Post
+    createPost(idCreator: String, post: String): Post
     editPost(idPost: String , post: EditPostInput): Post
     deletePost(_id: String): Boolean
+    likePost(idPost: String): Post
+    disLikePost(idPost: String): Post
 }

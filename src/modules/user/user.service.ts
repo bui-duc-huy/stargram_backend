@@ -3,33 +3,32 @@ import * as jwt from 'jsonwebtoken';
 import { getMongoManager, getMongoRepository, getRepository } from "typeorm";
 import  UserEntity  from './../../entities/user.entity';
 import PostEntity from "src/entities/post.entity";
+import { GraphQLError } from "graphql";
 
 
 @Injectable()
 export class UserService {
-    async decodeToken(token: String): Promise<any> {
+    async decodeToken(token: String): Promise<UserEntity> {
         // TODO:
         // Decode token để lấy object trong token
         // return { userID: '1', signedAt: 1577590325199 }
-        const user = jwt.verify(token, '123')
+        const user = jwt.verify(token, 'buiduchuy')
         return user
     }
 
     async getToken(user): Promise<any>{
-        const user1 = {
-            "username" : user.username,
-            "password" : user.password
-        }
-        return jwt.sign(user1, '123')
+        return jwt.sign({...user}, 'buiduchuy')
     }
     
     async createUser(user){
         const { username } = user
         const existedUser = await getRepository(UserEntity).findOne({ username })
         if(existedUser){
-            throw new Error("User has already exist")
+            throw new GraphQLError("User has already exist")
         }
-        const newUser = new UserEntity(user)
+        const newUser = new UserEntity()
+        newUser.username = user.username
+        newUser.password = user.password
         await getMongoManager().save(UserEntity, newUser)
         return user
     }
@@ -68,6 +67,18 @@ export class UserService {
         return foundUser
     }
 
+    async me(token){
+        const user = this.decodeToken(token)
+        return user
+    }
+
+    async getUserById(id){
+        let foundUser = []
+        for (let index = 0; index < id.length; index++) {
+            foundUser.push(await getMongoRepository(UserEntity).findOne(id[index]))          
+        }
+        return foundUser
+    }
 }
 
 

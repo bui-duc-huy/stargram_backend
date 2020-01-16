@@ -26,8 +26,8 @@ export default class PostEntity {
     @Column()
     idCreator: string
 
-    constructor(args: Partial<PostEntity>) {
-        Object.assign(this, args)
+    constructor(args: Partial<string>) {
+        this.des = args
         this.like = 0
         this.dislike = 0
     }

@@ -39,4 +39,14 @@ export class UserResolver {
     async getUserByPost(@Args('idPost') idPost){
         return await this.userService.getUserByPost(idPost)
     }
+
+    @Query()
+    async me(@Args('token') token){
+        return this.userService.me(token)
+    }
+
+    @Query()
+    async getUserById(@Args('id') id){
+        return await this.userService.getUserById(id)
+    }
 }

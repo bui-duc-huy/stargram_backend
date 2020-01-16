@@ -43,4 +43,18 @@ export class PostService {
         await getMongoRepository(PostEntity).deleteOne(deletePost)
         return true
     }
+
+    async likePost(idPost){
+        let foundPost = await getMongoRepository(PostEntity).findOne(idPost)
+        foundPost.like++
+        const savedPost = await getMongoRepository(PostEntity).save(foundPost)
+        return savedPost
+    }
+
+    async disLikePost(idPost){
+        let foundPost = await getMongoRepository(PostEntity).findOne(idPost)
+        foundPost.dislike++
+        const savedPost = await getMongoRepository(PostEntity).save(foundPost)
+        return savedPost
+    }
 }

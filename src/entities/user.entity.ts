@@ -20,8 +20,8 @@ export default class UserEntity {
   @Column()
   idPosts: string[]
   
-  constructor(args: Partial<UserEntity>) {
-    Object.assign(this, args)
+  constructor() {
+    this.role = "MEMBER"
     this.idPosts = []
   }
 }

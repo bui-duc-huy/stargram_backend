@@ -19,8 +19,8 @@ export class PostResolver {
     }
 
     @Mutation()
-    async createPost(@Args('idUser') idUser, @Args('post') post) {
-        return await this.postService.createPost(idUser, post)
+    async createPost(@Args('idCreator') idCreator, @Args('post') post) {
+        return await this.postService.createPost(idCreator, post)
     }
 
     @Mutation()
@@ -31,5 +31,15 @@ export class PostResolver {
     @Mutation()
     async deletePost(@Args('idPost') idPost){
         return await this.postService.deletePost(idPost)
+    }
+    
+    @Mutation()
+    async likePost(@Args('idPost') idPost){
+        return await this.postService.likePost(idPost)
+    }
+
+    @Mutation()
+    async disLikePost(@Args('idPost') idPost){
+        return await this.postService.disLikePost(idPost)
     }
 }

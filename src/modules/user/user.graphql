@@ -14,12 +14,13 @@ type Query {
   hello: String
   getAllUser: [User]  
   getUserByPost(idPost: String): User
+  me(token: String): User
+  getUserById(id: [String]): [User]
 }
 
 input CreateUserInput {
   username: String
   password: String
-  role: String
 }
 
 input EditUserInput {
