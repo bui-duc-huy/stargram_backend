@@ -6,7 +6,8 @@
   "license": "MIT",
   "engines": {
     "node": "10.16.0",
-    "npm": "6.9.0"
+    "npm": "6.9.0",
+    "nest": "6.12.9"
   },
   "scripts": {
     "prebuild": "rimraf dist",
