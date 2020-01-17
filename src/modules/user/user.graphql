@@ -1,13 +1,50 @@
 type User {
   _id: String
+  email: String
   username: String
   password: String
+  fullname: String
+  avatar: String
+  followers: [String]
+  followings: [String]
+  createAt: String
   role: String
-  idPosts: [String]
+  description: String
+  savedPost: [String]
 }
 
 type LoginResponse {
+  id: String
 	token: String
+}
+
+input CreateUserInput {
+  email: String
+  username: String
+  password: String
+  fullname: String
+}
+
+input EditUserInput {
+  email: String
+  password: String
+  fullname: String
+}
+
+input LoginRequest {
+  email: String
+  password: String
+}
+
+type Mutation {
+  createUser(input: CreateUserInput): User
+  login(input: LoginRequest): LoginResponse
+  updateUser(_id: String, input: EditUserInput): User
+  forgotPassword(email: String): User
+  updateAvatar(_id: String, avatar: String): User
+  deleteAllUser: Boolean
+  toggleFollow(_id: String, idFollowing: String):User
+  savePostToggle(_id: String, idPost: String): Post
 }
 
 type Query {
@@ -16,21 +53,4 @@ type Query {
   getUserByPost(idPost: String): User
   me(token: String): User
   getUserById(id: [String]): [User]
-}
-
-input CreateUserInput {
-  username: String
-  password: String
-}
-
-input EditUserInput {
-  username: String
-  password: String
-  role: String
-}
-
-type Mutation {
-  createUser(input: CreateUserInput): User
-  login(username: String, password: String): LoginResponse
-  editUser(_id: String, input: EditUserInput): User
 }

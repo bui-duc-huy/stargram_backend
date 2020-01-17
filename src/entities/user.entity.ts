@@ -1,5 +1,6 @@
-import { Entity, Column, ObjectIdColumn, OneToMany } from 'typeorm'
+import { Entity, Column, ObjectIdColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm'
 import PostEntity from './post.entity'
+import * as bcrypt from 'bcrypt'
 
 @Entity({
   name: 'User'
@@ -9,19 +10,55 @@ export default class UserEntity {
   _id: string
 
   @Column()
-  username: string
+  email: string
+
+  @Column()
+  username: String
 
   @Column()
   password: string
 
   @Column()
-  role: string
+  fullname: string
 
   @Column()
-  idPosts: string[]
+  avatar: string
+
+  @Column()
+  followings: string[]
+
+  @Column()
+  followers: string[]
+
+  @Column()
+  description: string
+
+  @Column()
+  savedPost: string[]
+
+  @Column()
+  createAt: Date
+
+  @Column()
+  role: string
   
-  constructor() {
+  @BeforeInsert()
+  async b4Register(){
     this.role = "MEMBER"
-    this.idPosts = []
+    this.avatar = ''
+    this.createAt = new Date
+    this.savedPost = []
+    this.followers = []
+    this.followings = []
+    this.password = await bcrypt.hash(this.password, 10)
   }
+
+  async newPassword(password){
+    this.password = await bcrypt.hash(password, 10)
+  }
+
+  async matchPassword(password){
+    return await bcrypt.compare(password, this.password)
+  }
+
 }

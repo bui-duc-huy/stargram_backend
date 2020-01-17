@@ -2,7 +2,7 @@ import { Resolver, Mutation, Args } from "@nestjs/graphql";
 import { Query } from '@nestjs/graphql'
 import { PostService } from './post.service'
 import { UseGuards } from "@nestjs/common";
-import { GqlAuthGuard } from './../../guards/auth.guard'
+// import { GqlAuthGuard } from './../../guards/auth.guard'
 
 @Resolver('post')
 export class PostResolver {

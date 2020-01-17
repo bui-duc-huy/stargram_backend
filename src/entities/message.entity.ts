@@ -2,25 +2,25 @@ import { Entity, Column, ObjectIdColumn, ManyToOne } from 'typeorm'
 import UserEntity from './user.entity'
 
 @Entity({
-    name: 'Post'
+    name: 'Message'
 })
-export default class PostEntity {
+export default class MessageEntity {
     @ObjectIdColumn()
     _id: string
 
     @Column()
-    thumnails: [string]
+    sender: UserEntity
+
+    @Column()
+    reciver: UserEntity
 
     @Column()
     des: string
 
     @Column()
-    like: [UserEntity]
+    timestamp: Date
 
-    @Column()
-    idCreator: UserEntity
-
-    // constructor(args: Partial<string>) {
-    //     this.des = args
-    // }
+    constructor() {
+        this.timestamp = new Date()
+    }
 }

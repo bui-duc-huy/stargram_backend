@@ -12,8 +12,10 @@ export interface AddPostInput {
 }
 
 export interface CreateUserInput {
+    email?: string;
     username?: string;
     password?: string;
+    fullname?: string;
 }
 
 export interface EditPostInput {
@@ -23,12 +25,18 @@ export interface EditPostInput {
 }
 
 export interface EditUserInput {
-    username?: string;
+    email?: string;
     password?: string;
-    role?: string;
+    fullname?: string;
+}
+
+export interface LoginRequest {
+    email?: string;
+    password?: string;
 }
 
 export interface LoginResponse {
+    id?: string;
     token?: string;
 }
 
@@ -39,8 +47,13 @@ export interface IMutation {
     likePost(idPost?: string): Post | Promise<Post>;
     disLikePost(idPost?: string): Post | Promise<Post>;
     createUser(input?: CreateUserInput): User | Promise<User>;
-    login(username?: string, password?: string): LoginResponse | Promise<LoginResponse>;
-    editUser(_id?: string, input?: EditUserInput): User | Promise<User>;
+    login(input?: LoginRequest): LoginResponse | Promise<LoginResponse>;
+    updateUser(_id?: string, input?: EditUserInput): User | Promise<User>;
+    forgotPassword(email?: string): User | Promise<User>;
+    updateAvatar(_id?: string, avatar?: string): User | Promise<User>;
+    deleteAllUser(): boolean | Promise<boolean>;
+    toggleFollow(_id?: string, idFollowing?: string): User | Promise<User>;
+    savePostToggle(_id?: string, idPost?: string): Post | Promise<Post>;
 }
 
 export interface Post {
@@ -65,8 +78,15 @@ export interface IQuery {
 
 export interface User {
     _id?: string;
+    email?: string;
     username?: string;
     password?: string;
+    fullname?: string;
+    avatar?: string;
+    followers?: string[];
+    followings?: string[];
+    createAt?: string;
     role?: string;
-    idPosts?: string[];
+    description?: string;
+    savedPost?: string[];
 }

@@ -14,7 +14,7 @@ import { PostModule } from './modules/post/post.module'
     TypeOrmModule.forRoot({
       type: 'mongodb',
       database: 'LoginAutheticate',
-      url: 'mongodb+srv://duchuy:123@cluster0-omxr5.mongodb.net/test?retryWrites=true&w=majority',
+      url: 'mongodb+srv://duchuy:123@cluster0-59mg4.mongodb.net/test?retryWrites=true&w=majority',
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
       useNewUrlParser: true,
@@ -27,7 +27,7 @@ import { PostModule } from './modules/post/post.module'
       context: ({ req }) => ({ req })
     }),
     UserModule,
-    PostModule
+    // PostModule
   ],
 })
 export class AppModule { }
