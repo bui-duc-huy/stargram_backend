@@ -1,0 +1,24 @@
+type Notification {
+    _id: String
+    sender: [User]
+    reciver: [User]
+    type: String
+    idPost: String
+    timestamp: String
+}
+
+type Query {
+    getAllNotification: Notification
+    getNotificationByUser(idUser: String): Notification
+}
+
+input CreateNotificationInput {
+    idSender: String
+    idReciver: String
+    type: String
+}
+
+type Mutation {
+    createNotification(input: CreateNotificationInput): Notification
+    deleteAllNotification: Boolean
+}

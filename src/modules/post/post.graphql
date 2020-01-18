@@ -1,11 +1,20 @@
 type Post {
     _id: String
-    title: String
-    des: String
-    image: String
-    like: Int
-    dislike: Int
-    idCreator: String
+    description: String
+    thumbnails: [String]
+    likes: [User]
+    creator: User
+    comments: [CommentType]
+    createAt: String
+}
+
+type CommentType {
+    _id: String
+    creator: User
+    thumbnails: String
+    description: String
+    commentAt: String
+    likes: [User]
 }
 
 type Query { 
@@ -14,21 +23,27 @@ type Query {
 }
 
 input AddPostInput {
-    title: String
-    des: String
-    image: String
+    description: String
+    thumbnails: [String]
 }
 
 input EditPostInput { 
-    title: String
-    des: String
-    image: String
+    description: String
+    thumbnails: [String]
+}
+
+input CommentPostInput {
+    description: String
+    thumbnails: String
 }
 
 type Mutation { 
-    createPost(idCreator: String, post: String): Post
-    editPost(idPost: String , post: EditPostInput): Post
-    deletePost(_id: String): Boolean
-    likePost(idPost: String): Post
-    disLikePost(idPost: String): Post
+    createPost(idCreator: String, input: AddPostInput): Post
+    editPost(idPost: String , input: EditPostInput): Post
+    deletePost(idPost: String): Boolean
+    toggleLikePost(idUser:String, idPost: String): Post
+    commentPost(idUser: String, idPost: String, input: CommentPostInput): Post
+    toggleLikeComment(idUser: String, idPost: String, idComment: String): Post
+    deleteComment(idPost: String, idComment: String): Post
+    deleteAllPost: Boolean  
 }

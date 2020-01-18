@@ -10,6 +10,7 @@
     "nest": "6.12.9"
   },
   "scripts": {
+    "gen": "ts-node src/generate.typing.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

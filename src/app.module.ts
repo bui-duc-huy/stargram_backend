@@ -7,13 +7,14 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config'
 import { PostModule } from './modules/post/post.module'
+import { NotificationModule } from './modules/notification/notification.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      database: 'LoginAutheticate',
+      database: 'SocialNetworking',
       url: 'mongodb+srv://duchuy:123@cluster0-59mg4.mongodb.net/test?retryWrites=true&w=majority',
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
@@ -27,7 +28,8 @@ import { PostModule } from './modules/post/post.module'
       context: ({ req }) => ({ req })
     }),
     UserModule,
-    // PostModule
+    PostModule,
+    NotificationModule
   ],
 })
 export class AppModule { }

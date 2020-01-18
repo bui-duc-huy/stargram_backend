@@ -6,6 +6,7 @@ import PostEntity from "src/entities/post.entity";
 import { GraphQLError } from "graphql";
 import { AuthenticationError } from 'apollo-server-core'
 import { userInfo } from "os";
+import { CreateUserInput, LoginRequest, EditUserInput } from "src/graphql.schema";
 
 @Injectable()
 export class UserService {
@@ -21,12 +22,22 @@ export class UserService {
         return jwt.sign({ ...user }, 'buiduchuy')
     }
 
-    async createUser(user) {
-        const { email } = user
-        const existedUser = await getRepository(UserEntity).findOne({ email })
-        if (existedUser) {
-            throw new GraphQLError("User has already exist")
+    async createUser(user: CreateUserInput) {
+        const { email, username} = user
+        const existedUserByEmail = await getRepository(UserEntity).findOne({ 
+            email 
+        })
+        const exsitedUserByUsername = await getRepository(UserEntity).findOne({ 
+            username 
+        })
+        
+        if (existedUserByEmail) {
+            throw new GraphQLError("Email has used to register another account")
         }
+        if(exsitedUserByUsername) {
+            throw new GraphQLError("Username has already exist")
+        }
+
         const newUser = new UserEntity()
         newUser.email = user.email
         newUser.username = user.username
@@ -37,10 +48,10 @@ export class UserService {
     }
 
     async getAllUser() {
-        return getMongoRepository(UserEntity).find({})
+        return await getMongoRepository(UserEntity).find({})
     }
 
-    async login(input) {
+    async login(input: LoginRequest) {
         const message = 'Incorrect username or password'
         const { email, password } = input
 
@@ -61,40 +72,47 @@ export class UserService {
         return response
     }
 
-    async updateUser(_id, input) {
+    async updateUser(_id: string, input: EditUserInput) {
         const foundUser = await getMongoRepository(UserEntity).findOne(_id)
         if (!foundUser) {
             throw new GraphQLError("User have not exist")
         }
+
         const { fullname, email, password } = input
+
         if (fullname) foundUser.fullname = fullname
         if (email) foundUser.email = email
-        if (password) foundUser.newPassword(password)
+        if (password) foundUser.password = await foundUser.newPassword(password)
+
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
         return savedUser
     }
 
     async deleteAllUser() {
-        await getMongoRepository(UserEntity).delete({})
+        await getMongoRepository(UserEntity).deleteMany({})
         return true
     }
 
-    async getUserByPost(idPost) {
-        const foundPost = await getMongoRepository(PostEntity).findOne(idPost)
-        const foundUser = await getMongoRepository(UserEntity).findOne(foundPost.idCreator)
-        if (!foundUser) {
-            throw new GraphQLError("User does not exist")
-        }
-        return foundUser
+    async getUserByPost(idPost: string) {
+        // const foundPost = await getMongoRepository(PostEntity).findOne(idPost)
+        // const foundUser = await getMongoRepository(UserEntity).findOne(foundPost.idCreator)
+
+        // if (!foundUser) {
+        //     throw new GraphQLError("User does not exist")
+        // }
+
+        // return foundUser
     }
 
-    async me(token) {
+    async me(token: string) {
         const user = await this.decodeToken(token)
-        const email = user.email
+        const { email } = user
         const foundUser = await getMongoRepository(UserEntity).findOne({ email })
+
         if (!foundUser) {
             throw new AuthenticationError("You dont have permission")
         }
+
         return user
     }
 
@@ -111,35 +129,41 @@ export class UserService {
         return userArray
     }
 
-    async forgotPassword(email) {
+    async forgotPassword(email: string) {
         let foundUser = await getMongoRepository(UserEntity).findOne({ email })
+
         if (!foundUser) {
             throw new AuthenticationError("You dont have permission")
         }
-        foundUser.newPassword("123")
+
+        foundUser.password = await foundUser.newPassword("123")
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
         return savedUser
     }
 
-    async updateAvatar(_id, avatar) {
+    async updateAvatar(_id: string, avatar: string) {
         const foundUser = await getMongoRepository(UserEntity).findOne(_id)
+
         if (!foundUser) {
             throw new AuthenticationError("You dont have permission")
         }
+
         foundUser.avatar = avatar
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
         return savedUser
     }
 
-    async toggleFollow(_id, idFollowing) {
+    async toggleFollow(_id: string, idFollowing: string) {
         const foundUser = await getMongoRepository(UserEntity).findOne(_id)
         const personFollowed = await getMongoRepository(UserEntity).findOne(idFollowing)
+
         if (!foundUser) {
             throw new AuthenticationError("You dont have permission")
         }
         if (!personFollowed) {
             throw new GraphQLError("user does not exist")
         }
+
         for (let index = 0; index < foundUser.followings.length; index++) {
             if (foundUser.followings[index] == idFollowing) {
                 foundUser.followings.splice(index, 1)
@@ -154,18 +178,22 @@ export class UserService {
                 return savedUser
             }
         }
+
         foundUser.followings.push(idFollowing)
         personFollowed.followers.push(_id)
         await getMongoRepository(UserEntity).save(personFollowed)
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
+
         return savedUser
     }
 
-    async savePostToggle(_id, idPost){
+    async savePostToggle(_id: string, idPost: string){
         const foundUser = await getMongoRepository(UserEntity).findOne(_id)
+
         if(!foundUser){
             throw new GraphQLError("You dont have permission")
         }
+
         for (let index = 0; index < foundUser.savedPost.length; index++) {
             if(foundUser.savedPost[index] == idPost){
                 foundUser.savedPost.splice(index, 1)
@@ -173,8 +201,23 @@ export class UserService {
                 return savedUser
             }            
         }
+        
         foundUser.savedPost.push(idPost)
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
+        return savedUser
+    }
+
+    async updateDescription(_id: string, description: string){
+        const foundUser = await getMongoRepository(UserEntity).findOne(
+            _id
+        )
+
+        if(!foundUser){
+            throw new GraphQLError("You dont have permission")
+        }
+        foundUser.description = description
+        const savedUser = await getMongoRepository(UserEntity).save(foundUser)
+
         return savedUser
     }
 }

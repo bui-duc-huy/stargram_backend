@@ -19,17 +19,17 @@ export class UserResolver {
         return this.userService.getAllUser()
     }
     @Query()
-    async getUserByPost(@Args('idPost') idPost: String){
+    async getUserByPost(@Args('idPost') idPost: string){
         return await this.userService.getUserByPost(idPost)
     }
 
     @Query()
-    async me(@Args('token') token: String){
+    async me(@Args('token') token: string){
         return this.userService.me(token)
     }
 
     @Query()
-    async getUserById(@Args('id') id: String){
+    async getUserById(@Args('id') id: string){
         return await this.userService.getUserById(id)
     }
 
@@ -39,7 +39,7 @@ export class UserResolver {
     }
     
     @Mutation()
-    async updateUser(@Args('_id') _id: String, @Args('input') input: EditUserInput){
+    async updateUser(@Args('_id') _id: string, @Args('input') input: EditUserInput){
         return await this.userService.updateUser(_id, input)
     }
 
@@ -49,7 +49,7 @@ export class UserResolver {
     }
 
     @Mutation()
-    async forgotPassword(@Args('email') email:String){
+    async forgotPassword(@Args('email') email:string){
         return await this.userService.forgotPassword(email)
     }
 
@@ -59,17 +59,22 @@ export class UserResolver {
     }
 
     @Mutation()
-    async updateAvatar(@Args('_id') _id,  @Args('avatar') avatar){
+    async updateAvatar(@Args('_id') _id: string,  @Args('avatar') avatar: string){
         return await this.userService.updateAvatar(_id, avatar)
     }
 
     @Mutation()
-    async toggleFollow(@Args('_id') _id, @Args('idFollowing') idFollowing){
+    async toggleFollow(@Args('_id') _id: string, @Args('idFollowing') idFollowing: string){
         return await this.userService.toggleFollow(_id, idFollowing)
     }   
 
     @Mutation()
-    async savePostToggle(@Args('_id') _id, @Args('idPost') idPost){
+    async savePostToggle(@Args('_id') _id: string, @Args('idPost') idPost: string){
 
+    }
+
+    @Mutation()
+    async updateDescription(@Args('_id') _id: string, @Args('description') description: string){
+        return this.userService.updateDescription(_id, description)
     }
 }

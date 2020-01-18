@@ -13,7 +13,7 @@ export default class UserEntity {
   email: string
 
   @Column()
-  username: String
+  username: string
 
   @Column()
   password: string
@@ -41,11 +41,12 @@ export default class UserEntity {
 
   @Column()
   role: string
-  
+
   @BeforeInsert()
-  async b4Register(){
+  async b4Register() {
     this.role = "MEMBER"
     this.avatar = ''
+    this.description = ''
     this.createAt = new Date
     this.savedPost = []
     this.followers = []
@@ -53,11 +54,11 @@ export default class UserEntity {
     this.password = await bcrypt.hash(this.password, 10)
   }
 
-  async newPassword(password){
-    this.password = await bcrypt.hash(password, 10)
+  async newPassword(password) {
+    return await bcrypt.hash(password, 10)
   }
 
-  async matchPassword(password){
+  async matchPassword(password) {
     return await bcrypt.compare(password, this.password)
   }
 

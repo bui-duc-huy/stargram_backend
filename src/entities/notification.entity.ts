@@ -23,7 +23,7 @@ export default class NotificationEntity {
     @Column()
     timestamp: Date
 
-    // constructor() {
-    //     this.timestamp = new Date()
-    // }
+    constructor() {
+        this.timestamp = new Date()
+    }
 }

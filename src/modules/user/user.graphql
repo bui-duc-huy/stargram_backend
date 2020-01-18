@@ -44,7 +44,9 @@ type Mutation {
   updateAvatar(_id: String, avatar: String): User
   deleteAllUser: Boolean
   toggleFollow(_id: String, idFollowing: String):User
-  savePostToggle(_id: String, idPost: String): Post
+  savePostToggle(_id: String, idPost: String): User
+  updateDescription(_id: String ,description: String): User
+  
 }
 
 type Query {

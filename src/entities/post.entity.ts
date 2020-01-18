@@ -1,5 +1,6 @@
-import { Entity, Column, ObjectIdColumn, ManyToOne } from 'typeorm'
+import { Entity, Column, ObjectIdColumn, ManyToOne, ObjectID } from 'typeorm'
 import UserEntity from './user.entity'
+import CommentEntity from './comment.entity'
 
 @Entity({
     name: 'Post'
@@ -9,18 +10,26 @@ export default class PostEntity {
     _id: string
 
     @Column()
-    thumnails: [string]
+    thumbnails: string[]
 
     @Column()
-    des: string
+    description: string
 
     @Column()
-    like: [UserEntity]
+    likes: UserEntity[]
 
     @Column()
-    idCreator: UserEntity
+    creator: UserEntity
 
-    // constructor(args: Partial<string>) {
-    //     this.des = args
-    // }
+    @Column()
+    comments: CommentEntity[]
+
+    @Column()
+    createAt: Date
+
+    constructor() {
+        this.likes = []
+        this.comments= []
+        this.createAt = new Date()
+    }
 }
