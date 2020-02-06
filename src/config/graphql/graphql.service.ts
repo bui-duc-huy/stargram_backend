@@ -50,6 +50,14 @@ export class GraphqlService implements GqlOptionsFactory {
                     })
     
                     return decoded
+                }else{ 
+                    return {
+                        currentUser : {
+                            username: 'guest',
+                            fullname: 'guest',
+                            role: "GUEST"
+                        }
+                    }
                 }
             }
         }
