@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from "@nestjs/graphql";
+import { Resolver, Mutation, Args, Context } from "@nestjs/graphql";
 import { Query } from '@nestjs/graphql'
 import { UserService } from './user.service'
 import { UseGuards } from "@nestjs/common";
@@ -24,8 +24,8 @@ export class UserResolver {
     }
 
     @Query()
-    async me(@Args('token') token: string){
-        return this.userService.me(token)
+    async me(@Context('currentUser') currentUser){
+        return currentUser
     }
 
     @Query()

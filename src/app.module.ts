@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -8,6 +6,7 @@ import { join } from 'path';
 import { ConfigModule } from '@nestjs/config'
 import { PostModule } from './modules/post/post.module'
 import { NotificationModule } from './modules/notification/notification.module'
+import { GraphqlService } from './config/graphql/graphql.service';
 
 @Module({
   imports: [
@@ -21,11 +20,8 @@ import { NotificationModule } from './modules/notification/notification.module'
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
-    GraphQLModule.forRoot({
-      playground: true,
-      debug: true,
-      typePaths: ['./**/*.graphql'],
-      context: ({ req }) => ({ req })
+    GraphQLModule.forRootAsync({
+      useClass: GraphqlService
     }),
     UserModule,
     PostModule,

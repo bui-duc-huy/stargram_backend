@@ -1,3 +1,10 @@
+directive @hasRoles(roles: [String]) on FIELD | FIELD_DEFINITION
+
+enum Roles {
+    ADMIN
+    MEMBER
+}
+
 type User {
   _id: String
   email: String
@@ -8,7 +15,7 @@ type User {
   followers: [String]
   followings: [String]
   createAt: String
-  role: String
+  role: Roles
   description: String
   savedPost: [String]
 }
@@ -37,22 +44,21 @@ input LoginRequest {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput): User
+  createUser(input: CreateUserInput): User 
   login(input: LoginRequest): LoginResponse
-  updateUser(_id: String, input: EditUserInput): User
-  forgotPassword(email: String): User
-  updateAvatar(_id: String, avatar: String): User
-  deleteAllUser: Boolean
-  toggleFollow(_id: String, idFollowing: String):User
-  savePostToggle(_id: String, idPost: String): User
-  updateDescription(_id: String ,description: String): User
-  
+  updateUser(_id: String, input: EditUserInput): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  forgotPassword(email: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  updateAvatar(_id: String, avatar: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  deleteAllUser: Boolean @hasRoles(roles: ["ADMIN"])
+  toggleFollow(_id: String, idFollowing: String):User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  savePostToggle(_id: String, idPost: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  updateDescription(_id: String ,description: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
 }
 
 type Query {
   hello: String
   getAllUser: [User]  
   getUserByPost(idPost: String): User
-  me(token: String): User
+  me: User
   getUserById(id: [String]): [User]
 }

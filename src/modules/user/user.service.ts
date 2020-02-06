@@ -62,7 +62,12 @@ export class UserService {
         if (!foundUser || !(await foundUser.matchPassword(password))) {
             throw new Error(message)
         }
-        const token = jwt.sign({ ...foundUser }, process.env.SECRET_KEY)
+
+        const hashToken = {
+            currentUser : foundUser
+        }
+
+        const token = jwt.sign(hashToken, process.env.SECRET_KEY)
         const id = foundUser._id
 
         const response = {
@@ -89,8 +94,11 @@ export class UserService {
     }
 
     async deleteAllUser() {
-        await getMongoRepository(UserEntity).deleteMany({})
-        return true
+        const deleteUser = await getMongoRepository(UserEntity).deleteMany({
+            role: 'MEMBER'
+        })
+        
+        return deleteUser.deletedCount !== 0
     }
 
     async getUserByPost(idPost: string) {

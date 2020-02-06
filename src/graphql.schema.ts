@@ -5,6 +5,11 @@
  */
 
 /* tslint:disable */
+export enum Roles {
+    ADMIN = "ADMIN",
+    MEMBER = "MEMBER"
+}
+
 export interface AddPostInput {
     description?: string;
     thumbnails?: string[];
@@ -107,7 +112,7 @@ export interface IQuery {
     hello(): string | Promise<string>;
     getAllUser(): User[] | Promise<User[]>;
     getUserByPost(idPost?: string): User | Promise<User>;
-    me(token?: string): User | Promise<User>;
+    me(): User | Promise<User>;
     getUserById(id?: string[]): User[] | Promise<User[]>;
 }
 
@@ -121,7 +126,7 @@ export interface User {
     followers?: string[];
     followings?: string[];
     createAt?: string;
-    role?: string;
+    role?: Roles;
     description?: string;
     savedPost?: string[];
 }
