@@ -2,7 +2,6 @@ import { Resolver, Mutation, Args, Context } from "@nestjs/graphql";
 import { Query } from '@nestjs/graphql'
 import { UserService } from './user.service'
 import { UseGuards } from "@nestjs/common";
-import { GqlAuthGuard } from './../../common/guards/auth.guard'
 import { LoginRequest, EditUserInput, CreateUserInput } from "src/graphql.schema";
 
 @Resolver('user')
