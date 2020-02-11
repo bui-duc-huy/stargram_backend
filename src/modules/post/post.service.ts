@@ -3,17 +3,12 @@ import { getMongoRepository } from "typeorm";
 import PostEntity from './../../entities/post.entity';
 import UserEntity from './../../entities/user.entity'
 import { GraphQLError } from "graphql";
-import { AddPostInput, EditPostInput, CommentPostInput } from "src/graphql.schema";
+import { AddPostInput, EditPostInput, CommentPostInput, User } from "src/graphql.schema";
 import CommentEntity from "src/entities/comment.entity";
 
 @Injectable()
 export class PostService {
-    async createPost(_id: string, input: AddPostInput) {
-        const foundUser = await getMongoRepository(UserEntity).findOne(_id)
-        if (!foundUser) {
-            throw new GraphQLError("You dont have permission")
-        }
-
+    async createPost(creator: UserEntity, input: AddPostInput) {
         const { description, thumbnails } = input
         const newPost = new PostEntity()
 
@@ -25,7 +20,7 @@ export class PostService {
             newPost.thumbnails = thumbnails
         }
 
-        newPost.creator = foundUser
+        newPost.creator = creator
 
         const savedPost = await getMongoRepository(PostEntity).save(newPost)
         return savedPost
@@ -79,40 +74,27 @@ export class PostService {
         return true
     }
 
-    async toggleLikePost(idUser: string, idPost: string) {
-        let _id = idUser
-        const foundUser = await getMongoRepository(UserEntity).findOne(_id)
-
-        if (!foundUser) {
-            throw new GraphQLError("You dont have permission")
-        }
-
-        _id = idPost
+    async toggleLikePost(userLike: UserEntity, idPost: string) {
+        const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
             throw new GraphQLError("Post doesnt exist")
         }
         for (let index = 0; index < foundPost.likes.length; index++) {
-            if (foundPost.likes[index]._id == idUser) {
+            if (foundPost.likes[index]._id == userLike._id) {
                 foundPost.likes.splice(index, 1)
                 const savedPost = await getMongoRepository(PostEntity).save(foundPost)
-                return savedPost
+                return false
             }
         }
 
-        foundPost.likes.push(foundUser)
+        foundPost.likes.push(userLike)
         const savedPost = await getMongoRepository(PostEntity).save(foundPost)
-        return savedPost
+        return true
     }
 
-    async commentOnPost(idUser: string, idPost: string, input: CommentPostInput) {
-        let _id = idUser
-        const foundUser = await getMongoRepository(UserEntity).findOne(_id)
-        if (!foundUser) {
-            throw new GraphQLError("You dont have permission")
-        }
-
-        _id = idPost
+    async commentOnPost(userComment: UserEntity, idPost: string, input: CommentPostInput) {
+        const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
             throw new GraphQLError("Post doesnt exist")
@@ -121,7 +103,7 @@ export class PostService {
         const { description, thumbnails } = input
         const newComment = new CommentEntity()
 
-        newComment.creator = foundUser
+        newComment.creator = userComment
 
         if (description) {
             newComment.description = description

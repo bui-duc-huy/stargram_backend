@@ -1,8 +1,9 @@
-import { Resolver, Mutation, Args } from "@nestjs/graphql";
+import { Resolver, Mutation, Args, Context } from "@nestjs/graphql";
 import { Query } from '@nestjs/graphql'
 import { PostService } from './post.service'
 import { UseGuards } from "@nestjs/common";
-import { AddPostInput, EditPostInput, Post, CommentType, CommentPostInput } from "src/graphql.schema";
+import { AddPostInput, EditPostInput, Post, CommentType, CommentPostInput, User } from "src/graphql.schema";
+import UserEntity from "src/entities/user.entity";
 // import { GqlAuthGuard } from './../../guards/auth.guard'
 
 @Resolver('post')
@@ -20,8 +21,8 @@ export class PostResolver {
     }
 
     @Mutation()
-    async createPost(@Args('idCreator') idCreator: string, @Args('input') input: AddPostInput) {
-        return await this.postService.createPost(idCreator, input)
+    async createPost(@Args('input') input: AddPostInput, @Context('currentUser') currentUser: UserEntity) {
+        return await this.postService.createPost(currentUser, input)
     }
 
     @Mutation()
@@ -31,17 +32,17 @@ export class PostResolver {
 
     @Mutation()
     async deletePost(@Args('idPost') idPost: string){
-        
-    }
+        return await this.postService.deletePost(idPost)
+    }   
     
     @Mutation()
-    async toggleLikePost(@Args('idUser') idUser: string,@Args('idPost') idPost: string){
-       return this.postService.toggleLikePost(idUser, idPost)
+    async toggleLikePost(@Args('idPost') idPost: string, @Context('currentUser') currentUser:UserEntity){
+       return this.postService.toggleLikePost(currentUser, idPost)
     }
 
     @Mutation()
-    async commentPost(@Args('idUser') idUser: string, @Args('idPost') idPost: string, @Args('input') input: CommentPostInput){
-        return this.postService.commentOnPost(idUser, idPost, input)
+    async commentPost(@Args('idPost') idPost: string, @Args('input') input: CommentPostInput, @Context('currentUser') currentUser:UserEntity){
+        return this.postService.commentOnPost(currentUser, idPost, input)
     } 
 
     @Mutation()

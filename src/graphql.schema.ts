@@ -66,12 +66,12 @@ export interface LoginResponse {
 export interface IMutation {
     createNotification(input?: CreateNotificationInput): Notification | Promise<Notification>;
     deleteAllNotification(): boolean | Promise<boolean>;
-    createPost(idCreator?: string, input?: AddPostInput): Post | Promise<Post>;
+    createPost(input?: AddPostInput): Post | Promise<Post>;
     editPost(idPost?: string, input?: EditPostInput): Post | Promise<Post>;
     deletePost(idPost?: string): boolean | Promise<boolean>;
-    toggleLikePost(idUser?: string, idPost?: string): Post | Promise<Post>;
-    commentPost(idUser?: string, idPost?: string, input?: CommentPostInput): Post | Promise<Post>;
-    toggleLikeComment(idUser?: string, idPost?: string, idComment?: string): Post | Promise<Post>;
+    toggleLikePost(idPost?: string): boolean | Promise<boolean>;
+    commentPost(idPost?: string, input?: CommentPostInput): Post | Promise<Post>;
+    toggleLikeComment(idPost?: string, idComment?: string): Post | Promise<Post>;
     deleteComment(idPost?: string, idComment?: string): Post | Promise<Post>;
     deleteAllPost(): boolean | Promise<boolean>;
     createUser(input?: CreateUserInput): User | Promise<User>;
