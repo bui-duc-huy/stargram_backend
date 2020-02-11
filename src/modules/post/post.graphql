@@ -1,3 +1,5 @@
+directive @hasRoles(roles: [String]) on FIELD | FIELD_DEFINITION  
+
 type Post {
     _id: String
     description: String
@@ -18,8 +20,8 @@ type CommentType {
 }
 
 type Query { 
-    getAllPost: [Post]
-    getPostByUser(idCreator: String): [Post]
+    getAllPost: [Post] @hasRoles(roles: ["ADMIN"])
+    getPostByUser(idCreator: String): [Post] @hasRoles(roles: ["MEMBER", "ADMIN"])
 }
 
 input AddPostInput {
@@ -38,12 +40,12 @@ input CommentPostInput {
 }
 
 type Mutation { 
-    createPost(idCreator: String, input: AddPostInput): Post
-    editPost(idPost: String , input: EditPostInput): Post
-    deletePost(idPost: String): Boolean
-    toggleLikePost(idUser:String, idPost: String): Post
-    commentPost(idUser: String, idPost: String, input: CommentPostInput): Post
-    toggleLikeComment(idUser: String, idPost: String, idComment: String): Post
-    deleteComment(idPost: String, idComment: String): Post
-    deleteAllPost: Boolean  
+    createPost(idCreator: String, input: AddPostInput): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    editPost(idPost: String , input: EditPostInput): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    deletePost(idPost: String): Boolean @hasRoles(roles: ["MEMBER", "ADMIN"])
+    toggleLikePost(idUser:String, idPost: String): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    commentPost(idUser: String, idPost: String, input: CommentPostInput): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    toggleLikeComment(idUser: String, idPost: String, idComment: String): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    deleteComment(idPost: String, idComment: String): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    deleteAllPost: Boolean  @hasRoles(roles: ["ADMIN"])
 }

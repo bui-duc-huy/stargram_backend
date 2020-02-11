@@ -58,7 +58,7 @@ type Mutation {
 type Query {
   hello: String
   getAllUser: [User] @hasRoles(roles: ["ADMIN"]) 
-  getUserByPost(idPost: String): User 
-  me: User
-  getUserById(id: [String]): [User]
+  getUserByPost(idPost: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  me: User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  getUserById(id: [String]): [User] @hasRoles(roles: ["MEMBER", "ADMIN"])
 }

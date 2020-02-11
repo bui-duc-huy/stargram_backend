@@ -14,12 +14,12 @@ export class UserService {
         // TODO:
         // Decode token để lấy object trong token
         // return { userID: '1', signedAt: 1577590325199 }
-        const user = jwt.verify(token, 'buiduchuy')
+        const user = jwt.verify(token, process.env.SECRET_KEY)
         return user
     }
 
     async getToken(user): Promise<any> {
-        return jwt.sign({ ...user }, 'buiduchuy')
+        return jwt.sign({ ...user }, process.env.SECRET_KEY)
     }
 
     async createUser(user: CreateUserInput) {
