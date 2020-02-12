@@ -23,8 +23,8 @@ export class UserResolver {
     }
 
     @Query()
-    async me(@Context('currentUser') currentUser){
-        return currentUser
+    async me(@Context('currentUserID') currentUserID){
+        return await this.userService.me(currentUserID)
     }
 
     @Query()

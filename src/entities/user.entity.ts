@@ -45,7 +45,7 @@ export default class UserEntity {
   @BeforeInsert()
   async b4Register() {
     this.role = "MEMBER"
-    this.avatar = ''
+    this.avatar = 'https://i.stack.imgur.com/l60Hf.png'
     this.description = ''
     this.createAt = new Date
     this.savedPost = []

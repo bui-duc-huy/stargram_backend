@@ -21,8 +21,8 @@ export class PostResolver {
     }
 
     @Mutation()
-    async createPost(@Args('input') input: AddPostInput, @Context('currentUser') currentUser: UserEntity) {
-        return await this.postService.createPost(currentUser, input)
+    async createPost(@Args('input') input: AddPostInput, @Context('currentUserID') currentUserID: string) {
+        return await this.postService.createPost(currentUserID, input)
     }
 
     @Mutation()
@@ -36,13 +36,13 @@ export class PostResolver {
     }   
     
     @Mutation()
-    async toggleLikePost(@Args('idPost') idPost: string, @Context('currentUser') currentUser:UserEntity){
-       return this.postService.toggleLikePost(currentUser, idPost)
+    async toggleLikePost(@Args('idPost') idPost: string, @Context('currentUserID') currentUserID: string){
+       return this.postService.toggleLikePost(currentUserID, idPost)
     }
 
     @Mutation()
-    async commentPost(@Args('idPost') idPost: string, @Args('input') input: CommentPostInput, @Context('currentUser') currentUser:UserEntity){
-        return this.postService.commentOnPost(currentUser, idPost, input)
+    async commentPost(@Args('idPost') idPost: string, @Args('input') input: CommentPostInput, @Context('currentUserID') currentUserID: string){
+        return this.postService.commentOnPost(currentUserID, idPost, input)
     } 
 
     @Mutation()

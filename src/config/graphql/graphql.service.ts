@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { GqlOptionsFactory, GqlModuleOptions } from "@nestjs/graphql";
 import * as jwt from 'jsonwebtoken'
 import { GraphQLError } from "graphql";
+import { getMongoRepository } from "typeorm";
+import UserEntity from "src/entities/user.entity";
 
 @Injectable()
 export class GraphqlService implements GqlOptionsFactory {
@@ -10,7 +12,15 @@ export class GraphqlService implements GqlOptionsFactory {
             hasRoles: async (next, source, args, ctx) => {
                 const { roles } = args
 
-                if (roles.indexOf(ctx.currentUser.role) === -1) {
+                const { currentUserID } = ctx
+
+                if (!currentUserID) {
+                    throw new GraphQLError('you dont have permission')
+                }
+
+                const foundUser = await getMongoRepository(UserEntity).findOne(currentUserID)
+
+                if (roles.indexOf(foundUser.role) === -1) {
                     throw new GraphQLError('you dont have permission')
                 }
 

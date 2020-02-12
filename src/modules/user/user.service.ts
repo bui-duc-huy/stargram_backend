@@ -64,7 +64,7 @@ export class UserService {
         }
 
         const hashToken = {
-            currentUser : foundUser
+            currentUserID : foundUser._id
         }
 
         const token = jwt.sign(hashToken, process.env.SECRET_KEY)
@@ -112,16 +112,14 @@ export class UserService {
         // return foundUser
     }
 
-    async me(token: string) {
-        const user = await this.decodeToken(token)
-        const { email } = user
-        const foundUser = await getMongoRepository(UserEntity).findOne({ email })
+    async me(id: string) {
+        const foundUser = await getMongoRepository(UserEntity).findOne(id)
 
         if (!foundUser) {
-            throw new AuthenticationError("You dont have permission")
+            throw new GraphQLError('User doesnt exit')
         }
 
-        return user
+        return foundUser
     }
 
     async getUserById(id) {

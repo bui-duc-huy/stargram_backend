@@ -8,7 +8,10 @@ import CommentEntity from "src/entities/comment.entity";
 
 @Injectable()
 export class PostService {
-    async createPost(creator: UserEntity, input: AddPostInput) {
+    async createPost(creatorID: string, input: AddPostInput) {
+
+        const foundUser = await getMongoRepository(UserEntity).findOne(creatorID)
+
         const { description, thumbnails } = input
         const newPost = new PostEntity()
 
@@ -20,7 +23,7 @@ export class PostService {
             newPost.thumbnails = thumbnails
         }
 
-        newPost.creator = creator
+        newPost.creator = foundUser
 
         const savedPost = await getMongoRepository(PostEntity).save(newPost)
         return savedPost
@@ -74,26 +77,33 @@ export class PostService {
         return true
     }
 
-    async toggleLikePost(userLike: UserEntity, idPost: string) {
+    async toggleLikePost(userLikeID: string, idPost: string) {
+
+        const foundUser = await getMongoRepository(UserEntity).findOne(userLikeID)
+        // console.log(foundUser)
+
         const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
             throw new GraphQLError("Post doesnt exist")
         }
         for (let index = 0; index < foundPost.likes.length; index++) {
-            if (foundPost.likes[index]._id == userLike._id) {
+            if (foundPost.likes[index]._id == userLikeID) {
                 foundPost.likes.splice(index, 1)
                 const savedPost = await getMongoRepository(PostEntity).save(foundPost)
                 return false
             }
         }
 
-        foundPost.likes.push(userLike)
+        foundPost.likes.push(foundUser)
         const savedPost = await getMongoRepository(PostEntity).save(foundPost)
         return true
     }
 
-    async commentOnPost(userComment: UserEntity, idPost: string, input: CommentPostInput) {
+    async commentOnPost(userCommentID: string, idPost: string, input: CommentPostInput) {
+
+        const foundUser = await getMongoRepository(UserEntity).findOne(userCommentID)
+
         const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
@@ -103,7 +113,7 @@ export class PostService {
         const { description, thumbnails } = input
         const newComment = new CommentEntity()
 
-        newComment.creator = userComment
+        newComment.creator = foundUser
 
         if (description) {
             newComment.description = description
