@@ -25,6 +25,9 @@ export default class UserEntity {
   avatar: string
 
   @Column()
+  dob: Date
+
+  @Column()
   followings: string[]
 
   @Column()
@@ -47,7 +50,8 @@ export default class UserEntity {
     this.role = "MEMBER"
     this.avatar = 'https://i.stack.imgur.com/l60Hf.png'
     this.description = ''
-    this.createAt = new Date
+    this.dob = new Date()
+    this.createAt = new Date()
     this.savedPost = []
     this.followers = []
     this.followings = []

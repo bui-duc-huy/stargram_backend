@@ -123,6 +123,7 @@ export interface User {
     password?: string;
     fullname?: string;
     avatar?: string;
+    dob?: string;
     followers?: string[];
     followings?: string[];
     createAt?: string;

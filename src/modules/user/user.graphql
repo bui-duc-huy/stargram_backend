@@ -12,6 +12,7 @@ type User {
   password: String
   fullname: String
   avatar: String
+  dob: String
   followers: [String]
   followings: [String]
   createAt: String
