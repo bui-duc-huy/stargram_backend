@@ -1,0 +1,37 @@
+type Message {
+  _id: String
+  createdBy: User
+  content: String
+  createdAt: String
+}
+
+type RoomChat{
+  _id: String
+  member: [User]
+  messages: [Message]
+}
+
+type CreateMessageResponse{
+  roomID: String
+  message: Message
+}
+
+type Mutation {
+  createMessage(message: MessageInput): CreateMessageResponse
+  createRoomChat(idMember: [String]): RoomChat  
+  deleteAllRoom: Boolean
+}
+
+type Subscription {
+  messageCreated(roomID: String!): CreateMessageResponse
+}
+
+input MessageInput {
+  content: String!
+  roomID: String!
+}
+
+type Query{
+  messages: Message
+  rooms: [RoomChat]
+}

@@ -46,6 +46,7 @@ input EditUserInput {
   dob:String
   username: String
   description: String
+  avatar: String
 }
 
 input LoginRequest {

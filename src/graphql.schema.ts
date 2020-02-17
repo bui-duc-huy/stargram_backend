@@ -50,11 +50,17 @@ export interface EditUserInput {
     dob?: string;
     username?: string;
     description?: string;
+    avatar?: string;
 }
 
 export interface LoginRequest {
     email?: string;
     password?: string;
+}
+
+export interface MessageInput {
+    content: string;
+    roomID: string;
 }
 
 export interface CommentType {
@@ -66,12 +72,27 @@ export interface CommentType {
     likes?: User[];
 }
 
+export interface CreateMessageResponse {
+    roomID?: string;
+    message?: Message;
+}
+
 export interface LoginResponse {
     id?: string;
     token?: string;
 }
 
+export interface Message {
+    _id?: string;
+    createdBy?: User;
+    content?: string;
+    createdAt?: string;
+}
+
 export interface IMutation {
+    createMessage(message?: MessageInput): CreateMessageResponse | Promise<CreateMessageResponse>;
+    createRoomChat(idMember?: string[]): RoomChat | Promise<RoomChat>;
+    deleteAllRoom(): boolean | Promise<boolean>;
     createNotification(input?: CreateNotificationInput): Notification | Promise<Notification>;
     deleteAllNotification(): boolean | Promise<boolean>;
     createPost(input?: AddPostInput): Post | Promise<Post>;
@@ -112,6 +133,8 @@ export interface Post {
 }
 
 export interface IQuery {
+    messages(): Message | Promise<Message>;
+    rooms(): RoomChat[] | Promise<RoomChat[]>;
     getAllNotification(): Notification | Promise<Notification>;
     getNotificationByUser(idUser?: string): Notification | Promise<Notification>;
     getAllPost(): Post[] | Promise<Post[]>;
@@ -121,6 +144,16 @@ export interface IQuery {
     getUserByPost(idPost?: string): User | Promise<User>;
     me(): User | Promise<User>;
     getUserById(id?: string[]): User[] | Promise<User[]>;
+}
+
+export interface RoomChat {
+    _id?: string;
+    member?: User[];
+    messages?: Message[];
+}
+
+export interface ISubscription {
+    messageCreated(roomID: string): CreateMessageResponse | Promise<CreateMessageResponse>;
 }
 
 export interface User {

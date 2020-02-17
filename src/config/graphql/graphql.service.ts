@@ -41,10 +41,10 @@ export class GraphqlService implements GqlOptionsFactory {
             typePaths: ['./**/*.graphql'],
             context: async ({ req, res, connection }) => {
                 if (connection) {
-					return {
-						req: connection.context,
-					}
-				}
+                    return {
+                        req: connection.context,
+                    }
+                }
 
                 const { authorization } = req.headers
 
@@ -53,20 +53,44 @@ export class GraphqlService implements GqlOptionsFactory {
                         throw new GraphQLError("Invalid token")
                     }
                     const token = authorization.split(' ')[1]
-    
-                    const decoded =  await jwt.verify(token, process.env.SECRET_KEY, (err, dec) =>{
-                        if(err) throw new GraphQLError(err.message || err.name)
+
+                    const decoded = await jwt.verify(token, process.env.SECRET_KEY, (err, dec) => {
+                        if (err) throw new GraphQLError(err.message || err.name)
                         return dec
                     })
-    
+
                     return decoded
-                }else{ 
+                } else {
                     return {
-                        currentUser : {
+                        currentUser: {
                             username: 'guest',
                             fullname: 'guest',
                             role: "GUEST"
                         }
+                    }
+                }
+            },
+            installSubscriptionHandlers: true,
+            subscriptions: {
+                onConnect: async (connectionParams: any, ws) => {
+                    const authorization = connectionParams.authorization
+
+                    if (!authorization) {
+                        return false
+                    }
+
+
+                    if (authorization.split(' ')[0] !== 'Bearer') {
+                        throw new GraphQLError('Invalid token')
+                    }
+
+                    const token = authorization.split(' ')[1]
+
+                    try {
+                        const userID = await jwt.verify(token, process.env.SECRET_KEY)
+                        return userID
+                    } catch{
+                        throw new GraphQLError('Invalid token')
                     }
                 }
             }

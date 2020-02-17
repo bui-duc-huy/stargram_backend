@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config'
 import { PostModule } from './modules/post/post.module'
 import { NotificationModule } from './modules/notification/notification.module'
 import { GraphqlService } from './config/graphql/graphql.service';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { GraphqlService } from './config/graphql/graphql.service';
     }),
     UserModule,
     PostModule,
-    NotificationModule
+    NotificationModule, 
+    MessageModule
   ],
 })
 export class AppModule { }

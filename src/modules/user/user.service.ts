@@ -83,7 +83,7 @@ export class UserService {
             throw new GraphQLError("User have not exist")
         }
 
-        const { fullname, email, sex, dob, username, description } = input
+        const { fullname, email, sex, dob, username, description, avatar } = input
 
         if (email) {
             const existUser = await getMongoRepository(UserEntity).findOne({email:email})
@@ -105,6 +105,7 @@ export class UserService {
 
         }
 
+        if(avatar) foundUser.avatar = avatar
         if (sex) foundUser.sex = sex
         if (fullname) foundUser.fullname = fullname
         if (description) foundUser.description = description

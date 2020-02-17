@@ -1,26 +1,49 @@
 import { Entity, Column, ObjectIdColumn, ManyToOne } from 'typeorm'
 import UserEntity from './user.entity'
 
-@Entity({
-    name: 'Message'
-})
-export default class MessageEntity {
+export class MessageEntity {
     @ObjectIdColumn()
     _id: string
 
     @Column()
-    sender: UserEntity
+    createdBy: UserEntity
 
     @Column()
-    reciver: UserEntity
+    content: string
 
     @Column()
-    des: string
-
-    @Column()
-    timestamp: Date
+    createdAt: Date
 
     constructor() {
-        this.timestamp = new Date()
+        this.createdAt = new Date()
     }
+}
+
+
+@Entity({
+    name: 'RoomChat'
+})
+export default class RoomChatEntity{
+    @ObjectIdColumn()
+    _id: string
+
+    @Column()
+    member: UserEntity[]
+
+    @Column()
+    messages: MessageEntity[]
+
+    @Column()
+    createdAt: Date
+
+    constructor(){
+        this.createdAt = new Date()
+        this.member = []
+        this.messages = []
+    }
+}
+
+export class CreateMessageResponse{
+    roomID: String
+    message: MessageEntity
 }
