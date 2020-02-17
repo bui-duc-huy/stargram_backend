@@ -83,11 +83,32 @@ export class UserService {
             throw new GraphQLError("User have not exist")
         }
 
-        const { fullname, email, password } = input
+        const { fullname, email, sex, dob, username, description } = input
 
+        if (email) {
+            const existUser = await getMongoRepository(UserEntity).findOne({email:email})
+
+            if (existUser && existUser.email !== foundUser.email) {
+                throw new GraphQLError('Email has used to register another account')
+            }
+
+            foundUser.email = email
+        }
+        if (username){
+            const existUser = await getMongoRepository(UserEntity).findOne({username: username})
+        
+            if (existUser && existUser.username !== foundUser.username) {
+                throw new GraphQLError('username has already exist')
+            }
+
+            foundUser.username = username
+
+        }
+
+        if (sex) foundUser.sex = sex
         if (fullname) foundUser.fullname = fullname
-        if (email) foundUser.email = email
-        if (password) foundUser.password = await foundUser.newPassword(password)
+        if (description) foundUser.description = description
+        if (dob) foundUser.dob = new Date(parseInt(dob))
 
         const savedUser = await getMongoRepository(UserEntity).save(foundUser)
         return savedUser

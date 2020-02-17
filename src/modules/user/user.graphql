@@ -5,6 +5,11 @@ enum Roles {
     MEMBER
 }
 
+enum Sexs{
+  male
+  female
+}
+
 type User {
   _id: String
   email: String
@@ -19,6 +24,7 @@ type User {
   role: Roles
   description: String
   savedPost: [String]
+  sex: Sexs
 }
 
 type LoginResponse {
@@ -35,8 +41,11 @@ input CreateUserInput {
 
 input EditUserInput {
   email: String
-  password: String
   fullname: String
+  sex: Sexs
+  dob:String
+  username: String
+  description: String
 }
 
 input LoginRequest {
@@ -47,13 +56,12 @@ input LoginRequest {
 type Mutation {
   createUser(input: CreateUserInput): User 
   login(input: LoginRequest): LoginResponse
-  updateUser(_id: String, input: EditUserInput): User @hasRoles(roles: ["MEMBER", "ADMIN"])
+  updateUser(input: EditUserInput): User @hasRoles(roles: ["MEMBER", "ADMIN"])
   forgotPassword(email: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
   updateAvatar(_id: String, avatar: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
   deleteAllUser: Boolean @hasRoles(roles: ["ADMIN"])
   toggleFollow(_id: String, idFollowing: String):User @hasRoles(roles: ["MEMBER", "ADMIN"])
   savePostToggle(_id: String, idPost: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
-  updateDescription(_id: String ,description: String): User @hasRoles(roles: ["MEMBER", "ADMIN"])
 }
 
 type Query {

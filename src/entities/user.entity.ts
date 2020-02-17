@@ -45,6 +45,9 @@ export default class UserEntity {
   @Column()
   role: string
 
+  @Column()
+  sex: string
+
   @BeforeInsert()
   async b4Register() {
     this.role = "MEMBER"
@@ -56,6 +59,7 @@ export default class UserEntity {
     this.followers = []
     this.followings = []
     this.password = await bcrypt.hash(this.password, 10)
+    this.sex = 'male'
   }
 
   async newPassword(password) {

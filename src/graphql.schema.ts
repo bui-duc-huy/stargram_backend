@@ -10,6 +10,11 @@ export enum Roles {
     MEMBER = "MEMBER"
 }
 
+export enum Sexs {
+    male = "male",
+    female = "female"
+}
+
 export interface AddPostInput {
     description?: string;
     thumbnails?: string[];
@@ -40,8 +45,11 @@ export interface EditPostInput {
 
 export interface EditUserInput {
     email?: string;
-    password?: string;
     fullname?: string;
+    sex?: Sexs;
+    dob?: string;
+    username?: string;
+    description?: string;
 }
 
 export interface LoginRequest {
@@ -76,13 +84,12 @@ export interface IMutation {
     deleteAllPost(): boolean | Promise<boolean>;
     createUser(input?: CreateUserInput): User | Promise<User>;
     login(input?: LoginRequest): LoginResponse | Promise<LoginResponse>;
-    updateUser(_id?: string, input?: EditUserInput): User | Promise<User>;
+    updateUser(input?: EditUserInput): User | Promise<User>;
     forgotPassword(email?: string): User | Promise<User>;
     updateAvatar(_id?: string, avatar?: string): User | Promise<User>;
     deleteAllUser(): boolean | Promise<boolean>;
     toggleFollow(_id?: string, idFollowing?: string): User | Promise<User>;
     savePostToggle(_id?: string, idPost?: string): User | Promise<User>;
-    updateDescription(_id?: string, description?: string): User | Promise<User>;
 }
 
 export interface Notification {
@@ -130,4 +137,5 @@ export interface User {
     role?: Roles;
     description?: string;
     savedPost?: string[];
+    sex?: Sexs;
 }

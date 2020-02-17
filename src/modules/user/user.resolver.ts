@@ -38,7 +38,7 @@ export class UserResolver {
     }
     
     @Mutation()
-    async updateUser(@Args('_id') _id: string, @Args('input') input: EditUserInput){
+    async updateUser(@Context('currentUserID') _id, @Args('input') input: EditUserInput){
         return await this.userService.updateUser(_id, input)
     }
 
@@ -70,10 +70,5 @@ export class UserResolver {
     @Mutation()
     async savePostToggle(@Args('_id') _id: string, @Args('idPost') idPost: string){
 
-    }
-
-    @Mutation()
-    async updateDescription(@Args('_id') _id: string, @Args('description') description: string){
-        return this.userService.updateDescription(_id, description)
     }
 }
