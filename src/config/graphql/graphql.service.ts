@@ -12,7 +12,7 @@ export class GraphqlService implements GqlOptionsFactory {
             hasRoles: async (next, source, args, ctx) => {
                 const { roles } = args
 
-                const { currentUserID } = ctx
+                const { currentUserID } = ctx.decoded || ctx
 
                 if (!currentUserID) {
                     throw new GraphQLError('you dont have permission')
@@ -41,8 +41,8 @@ export class GraphqlService implements GqlOptionsFactory {
             typePaths: ['./**/*.graphql'],
             context: async ({ req, res, connection }) => {
                 if (connection) {
-                    return {
-                        req: connection.context,
+                    return {    
+                        currentUserID: connection.context.currentUserID,
                     }
                 }
 
@@ -59,14 +59,10 @@ export class GraphqlService implements GqlOptionsFactory {
                         return dec
                     })
 
-                    return decoded
-                } else {
                     return {
-                        currentUser: {
-                            username: 'guest',
-                            fullname: 'guest',
-                            role: "GUEST"
-                        }
+                        decoded,
+                        req,
+                        res
                     }
                 }
             },

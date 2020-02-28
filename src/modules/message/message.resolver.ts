@@ -14,8 +14,8 @@ export class MessageResolver {
     constructor(private readonly messageService: MessageService) { }
 
     @Mutation()
-    async createMessage(@Args('message') message: MessageInput, @Context('currentUserID') userID: string): Promise<CreateMessageResponse> {
-        const saveMessage = await this.messageService.createMessage(message, userID)
+    async createMessage(@Args('message') message: MessageInput, @Context('currentUserID') currentUserID): Promise<CreateMessageResponse> {
+        const saveMessage = await this.messageService.createMessage(message, currentUserID)
         pubSub.publish('messageCreated', {
             messageCreated: saveMessage
         })
@@ -48,8 +48,8 @@ export class MessageResolver {
     }
 
     @Mutation()
-    async createRoomChat(@Context('currentUserID') currentUserID: string, @Args('idMember') idMember: string[]){
-        return await this.messageService.createRoom(currentUserID, idMember)
+    async createRoomChat(@Context('req') req, @Args('idMember') idMember: string[]){
+        return await this.messageService.createRoom(req.currentUserID, idMember)
     }
 
     @Mutation()
