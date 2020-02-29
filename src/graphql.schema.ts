@@ -65,11 +65,11 @@ export interface MessageInput {
 
 export interface CommentType {
     _id?: string;
-    creator?: User;
+    creator?: string;
     thumbnails?: string;
     description?: string;
     commentAt?: string;
-    likes?: User[];
+    likes?: string[];
 }
 
 export interface CreateMessageResponse {
@@ -95,7 +95,7 @@ export interface IMutation {
     deleteAllRoom(): boolean | Promise<boolean>;
     createNotification(input?: CreateNotificationInput): Notification | Promise<Notification>;
     deleteAllNotification(): boolean | Promise<boolean>;
-    createPost(input?: AddPostInput): Post | Promise<Post>;
+    createPost(input?: AddPostInput): PostResponse | Promise<PostResponse>;
     editPost(idPost?: string, input?: EditPostInput): Post | Promise<Post>;
     deletePost(idPost?: string): boolean | Promise<boolean>;
     toggleLikePost(idPost?: string): boolean | Promise<boolean>;
@@ -126,10 +126,15 @@ export interface Post {
     _id?: string;
     description?: string;
     thumbnails?: string[];
-    likes?: User[];
-    creator?: User;
+    likes?: string[];
+    creator?: string;
     comments?: CommentType[];
     createAt?: string;
+}
+
+export interface PostResponse {
+    post?: Post;
+    creator?: User;
 }
 
 export interface IQuery {
@@ -137,7 +142,7 @@ export interface IQuery {
     rooms(): RoomChat[] | Promise<RoomChat[]>;
     getAllNotification(): Notification | Promise<Notification>;
     getNotificationByUser(idUser?: string): Notification | Promise<Notification>;
-    getAllPost(): Post[] | Promise<Post[]>;
+    getAllPost(): PostResponse[] | Promise<PostResponse[]>;
     getPostByUser(idCreator?: string): Post[] | Promise<Post[]>;
     hello(): string | Promise<string>;
     getAllUser(): User[] | Promise<User[]>;
@@ -171,4 +176,6 @@ export interface User {
     description?: string;
     savedPost?: string[];
     sex?: Sexs;
+    isOnline?: boolean;
+    roomChats?: string[];
 }

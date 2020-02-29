@@ -48,6 +48,12 @@ export default class UserEntity {
   @Column()
   sex: string
 
+  @Column()
+  roomChats: string[]
+
+  @Column()
+  isOnline: boolean
+
   @BeforeInsert()
   async b4Register() {
     this.role = "MEMBER"
@@ -60,6 +66,8 @@ export default class UserEntity {
     this.followings = []
     this.password = await bcrypt.hash(this.password, 10)
     this.sex = 'male'
+    this.roomChats = []
+    this.isOnline = true
   }
 
   async newPassword(password) {

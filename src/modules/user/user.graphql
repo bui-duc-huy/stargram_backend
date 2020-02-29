@@ -1,8 +1,8 @@
 directive @hasRoles(roles: [String]) on FIELD | FIELD_DEFINITION
 
 enum Roles {
-    ADMIN
-    MEMBER
+  ADMIN
+  MEMBER
 }
 
 enum Sexs{
@@ -25,6 +25,8 @@ type User {
   description: String
   savedPost: [String]
   sex: Sexs
+  isOnline: Boolean
+  roomChats: [String]
 }
 
 type LoginResponse {

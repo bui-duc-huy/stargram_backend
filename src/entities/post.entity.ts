@@ -16,10 +16,10 @@ export default class PostEntity {
     description: string
 
     @Column()
-    likes: UserEntity[]
+    likes: string[]
 
     @Column()
-    creator: UserEntity
+    creator: string
 
     @Column()
     comments: CommentEntity[]

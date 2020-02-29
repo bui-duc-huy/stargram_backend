@@ -9,9 +9,6 @@ import CommentEntity from "src/entities/comment.entity";
 @Injectable()
 export class PostService {
     async createPost(creatorID: string, input: AddPostInput) {
-
-        const foundUser = await getMongoRepository(UserEntity).findOne(creatorID)
-
         const { description, thumbnails } = input
         const newPost = new PostEntity()
 
@@ -23,10 +20,14 @@ export class PostService {
             newPost.thumbnails = thumbnails
         }
 
-        newPost.creator = foundUser
+        newPost.creator = creatorID
 
         const savedPost = await getMongoRepository(PostEntity).save(newPost)
-        return savedPost
+        const postResponse = {
+            post: savedPost,
+            creator: await getMongoRepository(UserEntity).findOne(creatorID)
+        }
+        return postResponse
     }
 
     async deleteAllPost() {
@@ -35,7 +36,15 @@ export class PostService {
     }
 
     async getAllPost() {
-        return await getMongoRepository(PostEntity).find({})
+        let postResponse = []
+        const allPost =  await getMongoRepository(PostEntity).find({})
+        for (let index = 0; index < allPost.length; index++) {
+            postResponse.push({
+                post: allPost[index],
+                creator: await getMongoRepository(UserEntity).findOne(allPost[index].creator)
+            })
+        }
+        return postResponse
     }
 
     async getPostByUser(idUser) {
@@ -78,32 +87,25 @@ export class PostService {
     }
 
     async toggleLikePost(userLikeID: string, idPost: string) {
-
-        const foundUser = await getMongoRepository(UserEntity).findOne(userLikeID)
-        // console.log(foundUser)
-
         const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
             throw new GraphQLError("Post doesnt exist")
         }
         for (let index = 0; index < foundPost.likes.length; index++) {
-            if (foundPost.likes[index]._id == userLikeID) {
+            if (foundPost.likes[index] == userLikeID) {
                 foundPost.likes.splice(index, 1)
                 const savedPost = await getMongoRepository(PostEntity).save(foundPost)
                 return false
             }
         }
 
-        foundPost.likes.push(foundUser)
+        foundPost.likes.push(userLikeID)
         const savedPost = await getMongoRepository(PostEntity).save(foundPost)
         return true
     }
 
     async commentOnPost(userCommentID: string, idPost: string, input: CommentPostInput) {
-
-        const foundUser = await getMongoRepository(UserEntity).findOne(userCommentID)
-
         const _id = idPost
         const foundPost = await getMongoRepository(PostEntity).findOne(_id)
         if (!foundPost) {
@@ -113,7 +115,7 @@ export class PostService {
         const { description, thumbnails } = input
         const newComment = new CommentEntity()
 
-        newComment.creator = foundUser
+        newComment.creator = userCommentID
 
         if (description) {
             newComment.description = description

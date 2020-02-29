@@ -21,8 +21,8 @@ export class PostResolver {
     }
 
     @Mutation()
-    async createPost(@Args('input') input: AddPostInput, @Context('req') req) {
-        return await this.postService.createPost(req.currentUserID, input)
+    async createPost(@Args('input') input: AddPostInput, @Context('currentUserID') currentUserID) {
+        return await this.postService.createPost(currentUserID, input)
     }
 
     @Mutation()

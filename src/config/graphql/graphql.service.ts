@@ -12,7 +12,7 @@ export class GraphqlService implements GqlOptionsFactory {
             hasRoles: async (next, source, args, ctx) => {
                 const { roles } = args
 
-                const { currentUserID } = ctx.decoded || ctx
+                const { currentUserID } = ctx
 
                 if (!currentUserID) {
                     throw new GraphQLError('you dont have permission')
@@ -33,7 +33,12 @@ export class GraphqlService implements GqlOptionsFactory {
             debug: true,
             directiveResolvers,
             formatError: err => {
-                return err
+                return {
+                    message: err.message,
+                    code: err.extensions && err.extensions.code,
+                    locations: err.locations,
+                    path: err.path
+                }
             },
             formatResponse: err => {
                 return err
@@ -41,7 +46,7 @@ export class GraphqlService implements GqlOptionsFactory {
             typePaths: ['./**/*.graphql'],
             context: async ({ req, res, connection }) => {
                 if (connection) {
-                    return {    
+                    return {
                         currentUserID: connection.context.currentUserID,
                     }
                 }
@@ -60,7 +65,7 @@ export class GraphqlService implements GqlOptionsFactory {
                     })
 
                     return {
-                        decoded,
+                        currentUserID: decoded.currentUserID,
                         req,
                         res
                     }
@@ -68,13 +73,12 @@ export class GraphqlService implements GqlOptionsFactory {
             },
             installSubscriptionHandlers: true,
             subscriptions: {
+                keepAlive: 1000,
                 onConnect: async (connectionParams: any, ws) => {
                     const authorization = connectionParams.authorization
-
                     if (!authorization) {
                         return false
                     }
-
 
                     if (authorization.split(' ')[0] !== 'Bearer') {
                         throw new GraphQLError('Invalid token')
@@ -83,11 +87,31 @@ export class GraphqlService implements GqlOptionsFactory {
                     const token = authorization.split(' ')[1]
 
                     try {
-                        const userID = await jwt.verify(token, process.env.SECRET_KEY)
-                        return userID
+                        const { currentUserID } = await jwt.verify(token, process.env.SECRET_KEY)
+
+                        const foundUser = await getMongoRepository(UserEntity).findOne(currentUserID)
+
+                        foundUser.isOnline = true
+
+                        await getMongoRepository(UserEntity).save(foundUser)
+
+                        return {
+                            currentUserID
+                        }
                     } catch{
                         throw new GraphQLError('Invalid token')
                     }
+                },
+                onDisconnect: async (ws, context) => {
+                    const { initPromise } = context
+
+                    const { currentUserID } = await initPromise
+
+                    const foundUser = await getMongoRepository(UserEntity).findOne(currentUserID)
+
+                    foundUser.isOnline = false
+
+                    await getMongoRepository(UserEntity).save(foundUser)
                 }
             }
         }

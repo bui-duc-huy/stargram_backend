@@ -4,23 +4,28 @@ type Post {
     _id: String
     description: String
     thumbnails: [String]
-    likes: [User]
-    creator: User
+    likes: [String]
+    creator: String
     comments: [CommentType]
     createAt: String
 }
 
 type CommentType {
     _id: String
-    creator: User
+    creator: String
     thumbnails: String
     description: String
     commentAt: String
-    likes: [User]
+    likes: [String]
+}
+
+type PostResponse{
+    post: Post
+    creator: User
 }
 
 type Query { 
-    getAllPost: [Post] @hasRoles(roles: ["ADMIN", "MEMBER"])
+    getAllPost: [PostResponse] @hasRoles(roles: ["ADMIN", "MEMBER"])
     getPostByUser(idCreator: String): [Post] @hasRoles(roles: ["MEMBER", "ADMIN"])
 }
 
@@ -40,7 +45,7 @@ input CommentPostInput {
 }
 
 type Mutation { 
-    createPost(input: AddPostInput): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
+    createPost(input: AddPostInput): PostResponse @hasRoles(roles: ["MEMBER", "ADMIN"])
     editPost(idPost: String , input: EditPostInput): Post @hasRoles(roles: ["MEMBER", "ADMIN"])
     deletePost(idPost: String): Boolean @hasRoles(roles: ["MEMBER", "ADMIN"])
     toggleLikePost(idPost: String): Boolean @hasRoles(roles: ["MEMBER", "ADMIN"])
